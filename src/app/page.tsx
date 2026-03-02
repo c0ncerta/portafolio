@@ -10,8 +10,7 @@ export default function Home() {
   const [showLinkedInAlert, setShowLinkedInAlert] = useState(false);
   const [showEmailCopiedToast, setShowEmailCopiedToast] = useState(false);
 
-  const handleLinkedInClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
+  const handleLinkedInClick = (_event: MouseEvent<HTMLButtonElement>) => {
     setShowLinkedInAlert(true);
   };
 
