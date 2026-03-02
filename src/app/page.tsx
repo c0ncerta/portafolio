@@ -204,7 +204,7 @@ export default function Home() {
               "Git",
               "C/C++ (Arduino)",
               "MySql",
-              "MangoDB",
+              "MongoDB",
             ].map((s) => (
               <span key={s} className={styles.tag}>
                 {s}
