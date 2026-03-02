@@ -1,7 +1,29 @@
+"use client";
+
+import { type MouseEvent, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
   const linkedInUrl = "https://www.linkedin.com/in/ram-daod/";
+  const [showLinkedInAlert, setShowLinkedInAlert] = useState(false);
+
+  const handleLinkedInClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    setShowLinkedInAlert(true);
+  };
+
+  useEffect(() => {
+    if (!showLinkedInAlert) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowLinkedInAlert(false);
+    }, 5200);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [showLinkedInAlert]);
+
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -54,8 +76,7 @@ export default function Home() {
             </a>
             <a
               href={linkedInUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={handleLinkedInClick}
               className={`${styles.btn} ${styles.btnLinkedIn}`}
             >
               LinkedIn
@@ -205,14 +226,34 @@ export default function Home() {
             <a
               className={styles.link}
               href={linkedInUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={handleLinkedInClick}
             >
               linkedin.com/in/ram-daod/
             </a>
           </div>
         </footer>
       </div>
+      {showLinkedInAlert ? (
+        <div
+          className={styles.linkedInAlert}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <p className={styles.linkedInAlertTitle}>Enlace no disponible</p>
+          <p className={styles.linkedInAlertText}>
+            Lo sentimos, pero no se puede acceder a este link por circunstancias
+            fuera de nuestras capacidades.
+          </p>
+          <button
+            type="button"
+            className={styles.linkedInAlertClose}
+            onClick={() => setShowLinkedInAlert(false)}
+          >
+            Cerrar
+          </button>
+        </div>
+      ) : null}
     </main>
   );
 }
