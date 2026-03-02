@@ -161,7 +161,8 @@
 }
 
 .btn:focus-visible,
-.link:focus-visible {
+.link:focus-visible,
+.cardAction:focus-visible {
   outline: 3px solid #1f6feb;
   outline-offset: 2px;
 }
@@ -317,6 +318,27 @@
   font-size: 13px;
 }
 
+.cardLinks {
+  display: flex;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+}
+
+.cardAction {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.66);
+  color: #0a0a0a;
+  text-decoration: none;
+}
+
+.cardAction:hover {
+  border-color: rgba(0, 0, 0, 0.28);
+}
+
 .tags {
   margin-top: 14px;
   display: flex;
@@ -445,6 +467,29 @@
   border-color: rgba(10, 102, 194, 0.5);
 }
 
+.emailCopiedToast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 45;
+  border-radius: 12px;
+  border: 1px solid rgba(180, 83, 9, 0.34);
+  background:
+    radial-gradient(
+      230px 120px at 20% 0%,
+      rgba(245, 158, 11, 0.2),
+      transparent 70%
+    ),
+    rgba(255, 255, 255, 0.95);
+  color: #9a3412;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 680;
+  box-shadow: 0 12px 30px rgba(180, 83, 9, 0.16);
+  backdrop-filter: blur(8px);
+  animation: linkedInAlertIn 0.2s ease;
+}
+
 @media (max-width: 640px) {
   .actions {
     display: grid;
@@ -466,6 +511,13 @@
     right: 12px;
     bottom: 14px;
     width: auto;
+  }
+
+  .emailCopiedToast {
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
+    text-align: center;
   }
 }
 

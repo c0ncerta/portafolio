@@ -4,12 +4,26 @@ import { type MouseEvent, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const emailAddress = "rmdaod@proton.me";
   const linkedInUrl = "https://www.linkedin.com/in/ram-daod/";
+  const cvPdfUrl = "https://pdflink.to/cv_rmdaod/";
   const [showLinkedInAlert, setShowLinkedInAlert] = useState(false);
+  const [showEmailCopiedToast, setShowEmailCopiedToast] = useState(false);
 
   const handleLinkedInClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     setShowLinkedInAlert(true);
+  };
+
+  const handleEmailClick = () => {
+    void navigator.clipboard
+      .writeText(emailAddress)
+      .then(() => {
+        setShowEmailCopiedToast(true);
+      })
+      .catch(() => {
+        // Clipboard can fail if permissions are blocked by the browser.
+      });
   };
 
   useEffect(() => {
@@ -24,12 +38,24 @@ export default function Home() {
     return () => window.clearTimeout(timeoutId);
   }, [showLinkedInAlert]);
 
+  useEffect(() => {
+    if (!showEmailCopiedToast) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowEmailCopiedToast(false);
+    }, 2600);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [showEmailCopiedToast]);
+
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Ram Daod",
     jobTitle: "Junior Full-Stack Developer",
-    email: "mailto:rmdaod@proton.me",
+    email: `mailto:${emailAddress}`,
     sameAs: ["https://github.com/c0ncerta", linkedInUrl],
     knowsLanguage: ["ar", "es", "ca", "en"],
     address: {
@@ -61,7 +87,8 @@ export default function Home() {
 
           <div className={styles.actions}>
             <a
-              href="mailto:rmdaod@proton.me"
+              href={`mailto:${emailAddress}`}
+              onClick={handleEmailClick}
               className={`${styles.btn} ${styles.btnEmail}`}
             >
               Contactar por email
@@ -85,7 +112,9 @@ export default function Home() {
               Ver proyectos
             </a>
             <a
-              href="mailto:rmdaod@proton.me?subject=Solicitud%20de%20CV%20-%20Ram%20Daod"
+              href={cvPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`${styles.btn} ${styles.btnCv}`}
             >
               Pedir CV
@@ -111,8 +140,16 @@ export default function Home() {
               title="Discord-like (colaborador) - en progreso"
               subtitle="App tipo chat para comunidades con soporte y moderacion."
               stack="Node.js"
-              repoLabel="Repo privado / en el GitHub del equipo"
-              repoUrl=""
+              actions={[
+                {
+                  label: "Ver demo en vivo →",
+                  url: "https://divilus-demo.vercel.app/",
+                },
+                {
+                  label: "Ver repositorio demo →",
+                  url: "https://github.com/c0ncerta/divilus-demo",
+                },
+              ]}
               problem="Soporte y gestion manuales consumian tiempo en comunidades activas."
               solution="Diseño de flujos de tickets y herramientas de moderacion anti-spam con comandos de administracion."
               impact="Menos trabajo manual del staff y trazabilidad de incidencias. Pendiente publicar demo publica."
@@ -123,8 +160,7 @@ export default function Home() {
                 title="Bot de tickets y moderación"
                 subtitle="Automatizacion de soporte para servidores de comunidad."
                 stack="Node.js"
-                repoLabel="Repo (añadir link cuando lo tengas)"
-                repoUrl=""
+                statusText="Próximamente"
                 problem="Los canales se saturaban y era dificil priorizar incidencias."
                 solution="Sistema de creacion de tickets y comandos de control para spam, advertencias y acciones disciplinarias."
                 impact="Flujo de soporte mas claro y tiempos de respuesta mas predecibles."
@@ -133,8 +169,12 @@ export default function Home() {
                 title="Dotfiles / entorno de desarrollo"
                 subtitle="Setup reproducible para desarrollo diario."
                 stack="Shell · Editor · Git"
-                repoLabel="Repo (anadir link cuando lo tengas)"
-                repoUrl=""
+                actions={[
+                  {
+                    label: "Repositorio →",
+                    url: "https://github.com/c0ncerta/.dotfiles",
+                  },
+                ]}
                 problem="Configurar un entorno nuevo desde cero era lento e inconsistente."
                 solution="Dotfiles versionados con aliases, scripts y defaults para shell/editor/git."
                 impact="Onboarding tecnico mas rapido y flujo de trabajo mas estable."
@@ -212,8 +252,12 @@ export default function Home() {
         <footer className={`${styles.footer} ${styles.reveal} ${styles.delay6}`}>
           <p className={styles.footerCopy}>© {new Date().getFullYear()} Ram Daod</p>
           <div className={styles.footerLinks}>
-            <a className={styles.link} href="mailto:rmdaod@proton.me">
-              rmdaod@proton.me
+            <a
+              className={styles.link}
+              href={`mailto:${emailAddress}`}
+              onClick={handleEmailClick}
+            >
+              {emailAddress}
             </a>
             <a
               className={styles.link}
@@ -254,6 +298,11 @@ export default function Home() {
           </button>
         </div>
       ) : null}
+      {showEmailCopiedToast ? (
+        <div className={styles.emailCopiedToast} role="status" aria-live="polite">
+          Email copiado al portapapeles
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -265,8 +314,13 @@ type ProjectProps = {
   problem: string;
   solution: string;
   impact: string;
-  repoLabel: string;
-  repoUrl: string;
+  actions?: ProjectAction[];
+  statusText?: string;
+};
+
+type ProjectAction = {
+  label: string;
+  url: string;
 };
 
 function FeaturedProjectCard(props: ProjectProps) {
@@ -297,17 +351,22 @@ function FeaturedProjectCard(props: ProjectProps) {
       </dl>
 
       <div className={styles.cardBottom}>
-        {props.repoUrl ? (
-          <a
-            className={styles.link}
-            href={props.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Repo
-          </a>
+        {props.actions?.length ? (
+          <div className={styles.cardLinks}>
+            {props.actions.map((action) => (
+              <a
+                key={`${props.title}-${action.url}`}
+                className={styles.cardAction}
+                href={action.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {action.label}
+              </a>
+            ))}
+          </div>
         ) : (
-          <span className={styles.muted}>{props.repoLabel}</span>
+          <span className={styles.muted}>{props.statusText ?? "Próximamente"}</span>
         )}
       </div>
     </article>
@@ -341,17 +400,22 @@ function ProjectCard(props: ProjectProps) {
       </dl>
 
       <div className={styles.cardBottom}>
-        {props.repoUrl ? (
-          <a
-            className={styles.link}
-            href={props.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Repo
-          </a>
+        {props.actions?.length ? (
+          <div className={styles.cardLinks}>
+            {props.actions.map((action) => (
+              <a
+                key={`${props.title}-${action.url}`}
+                className={styles.cardAction}
+                href={action.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {action.label}
+              </a>
+            ))}
+          </div>
         ) : (
-          <span className={styles.muted}>{props.repoLabel}</span>
+          <span className={styles.muted}>{props.statusText ?? "Próximamente"}</span>
         )}
       </div>
     </article>
