@@ -67,6 +67,9 @@ export default function Home() {
 
   return (
     <main className={styles.page}>
+      <a className={styles.skipLink} href="#proyectos">
+        Saltar al contenido principal
+      </a>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
@@ -90,6 +93,7 @@ export default function Home() {
               href={`mailto:${emailAddress}`}
               onClick={handleEmailClick}
               className={`${styles.btn} ${styles.btnEmail}`}
+              aria-label={`Contactar por email a ${emailAddress}. También copia el correo al portapapeles.`}
             >
               Contactar por email
             </a>
@@ -98,16 +102,18 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className={`${styles.btn} ${styles.btnGitHub}`}
+              aria-label="GitHub (se abre en una pestaña nueva)"
             >
               GitHub
             </a>
-            <a
-              href={linkedInUrl}
+            <button
+              type="button"
               onClick={handleLinkedInClick}
               className={`${styles.btn} ${styles.btnLinkedIn}`}
+              aria-label="LinkedIn (enlace temporalmente no disponible)"
             >
               LinkedIn
-            </a>
+            </button>
             <a href="#proyectos" className={`${styles.btn} ${styles.btnProjects}`}>
               Ver proyectos
             </a>
@@ -116,6 +122,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className={`${styles.btn} ${styles.btnCv}`}
+              aria-label="Pedir CV en PDF (se abre en una pestaña nueva)"
             >
               Pedir CV
             </a>
@@ -256,6 +263,7 @@ export default function Home() {
               className={styles.link}
               href={`mailto:${emailAddress}`}
               onClick={handleEmailClick}
+              aria-label={`${emailAddress}. Abre el cliente de correo y copia el email al portapapeles.`}
             >
               {emailAddress}
             </a>
@@ -264,16 +272,18 @@ export default function Home() {
               href="https://github.com/c0ncerta"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="GitHub de Ram Daod (se abre en una pestaña nueva)"
             >
               github.com/c0ncerta
             </a>
-            <a
-              className={styles.link}
-              href={linkedInUrl}
+            <button
+              type="button"
+              className={`${styles.link} ${styles.linkButton}`}
               onClick={handleLinkedInClick}
+              aria-label="LinkedIn (enlace temporalmente no disponible)"
             >
               linkedin.com/in/ram-daod/
-            </a>
+            </button>
           </div>
         </footer>
       </div>
@@ -360,6 +370,7 @@ function FeaturedProjectCard(props: ProjectProps) {
                 href={action.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${action.label} (se abre en una pestaña nueva)`}
               >
                 {action.label}
               </a>
@@ -409,6 +420,7 @@ function ProjectCard(props: ProjectProps) {
                 href={action.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${action.label} (se abre en una pestaña nueva)`}
               >
                 {action.label}
               </a>
